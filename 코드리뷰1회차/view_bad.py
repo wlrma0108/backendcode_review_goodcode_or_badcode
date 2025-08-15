@@ -26,3 +26,16 @@ def create_order(request):
     order.save()
     notify_webhook(order.id)                   
     return JsonResponse({"id": str(order.id), "total": total}, status=200)  
+
+
+def list_orders(request):
+    qs = Order.objects.filter(user=request.user).order_by("-created_at")  
+    data = []
+    for o in qs:                                       
+        items = [{"sku": it.product.sku,               
+                  "qty": it.quantity,
+                  "price": str(it.unit_price)} for it in o.items.all()]
+        data.append({"id": str(o.id),
+                     "total": str(o.total_amount),
+                     "items": items})
+    return JsonResponse({"results": data})             
