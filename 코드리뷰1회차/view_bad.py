@@ -1,4 +1,3 @@
-# apps/shop/views_bad.py
 import json
 from django.http import JsonResponse
 from .models import Product, Order, OrderItem
