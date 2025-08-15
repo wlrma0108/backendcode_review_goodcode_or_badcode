@@ -4,17 +4,17 @@ from django.http import JsonResponse
 from .models import Product, Order, OrderItem
 
 def create_order(request):
-    data = json.loads(request.body)              # ❌ 스키마/타입 검증 없음
-    items = data.get("items", [])                # [{"sku":"A","quantity":2}, ...]
+    data = json.loads(request.body)              
+    items = data.get("items", [])               
     order = Order.objects.create(user=request.user, total_amount=0)
 
-    total = 0.0                                  # ❌ float 사용 → 정밀도 손실
+    total = 0.0                                  
     for it in items:
-        prod = Product.objects.get(sku=it["sku"])   # ❌ 루프 안 개별 조회 → N+1
-        if prod.stock < it["quantity"]:             # 경쟁조건 未방어
+        prod = Product.objects.get(sku=it["sku"])  
+        if prod.stock < it["quantity"]:            
             return JsonResponse({"error": "out of stock"}, status=400)
         prod.stock -= it["quantity"]
-        prod.save()                                 # ❌ 줄마다 저장, 트랜잭션 경계 없음
+        prod.save()                                
 
         OrderItem.objects.create(
             order=order, product=prod,
@@ -24,5 +24,5 @@ def create_order(request):
 
     order.total_amount = total
     order.save()
-    notify_webhook(order.id)                    # ❌ 커밋 보장 전 외부 호출
-    return JsonResponse({"id": str(order.id), "total": total}, status=200)  # ❌ 201 아님
+    notify_webhook(order.id)                   
+    return JsonResponse({"id": str(order.id), "total": total}, status=200)  
