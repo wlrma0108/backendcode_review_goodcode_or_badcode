@@ -67,16 +67,7 @@ def place_bid_v2(request, auction_id):
 
 @api_view(['POST'])
 def place_bid_v2_with_transaction(request, auction_id):
-    """
-    트랜잭션 추가 시도
-    
-    개선점:
-    - atomic 트랜잭션으로 묶음
-    
-    여전한 문제:
-    - 이전 최고 입찰자의 재화 복구 안 함
-    - 동시 입찰 시 여전히 문제
-    """
+
     user = request.user
     bid_amount = request.data.get('amount')
     

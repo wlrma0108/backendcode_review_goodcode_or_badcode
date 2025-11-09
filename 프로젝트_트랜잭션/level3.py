@@ -189,12 +189,7 @@ def place_bid_v3(request, auction_id):
 
 @api_view(['POST'])
 def finalize_auction(request, auction_id):
-    """
-    경매 종료 시 재화 정산
     
-    - 낙찰자: 잠금된 재화를 실제로 차감
-    - 낙찰 실패자: 잠금 해제
-    """
     try:
         with transaction.atomic():
             auction = Auction.objects.select_for_update().get(id=auction_id)
