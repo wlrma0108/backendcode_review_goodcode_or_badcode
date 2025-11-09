@@ -6,19 +6,6 @@ from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
 
 class AuctionConsumer(AsyncWebsocketConsumer):
-    """
-    비동기 WebSocket with 채널 그룹
-    
-    개선점:
-    1. async/await로 비블로킹 처리
-    2. 채널 그룹으로 같은 경매 참여자들에게 브로드캐스트
-    3. 인증 처리 추가
-    
-    여전한 문제:
-    1. 메모리에만 그룹 정보 저장 (서버 재시작 시 소실)
-    2. 멀티 서버 환경에서 동작 안 함
-    3. 재연결 시 이전 상태 복구 불가
-    """
     
     async def connect(self):
         # URL에서 경매 ID 추출
